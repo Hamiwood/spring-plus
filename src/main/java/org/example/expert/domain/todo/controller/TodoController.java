@@ -1,5 +1,6 @@
 package org.example.expert.domain.todo.controller;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.annotation.Auth;
@@ -18,6 +19,7 @@ public class TodoController {
 
     private final TodoService todoService;
 
+    @Transactional
     @PostMapping("/todos")
     public ResponseEntity<TodoSaveResponse> saveTodo(
             @Auth AuthUser authUser,
