@@ -12,6 +12,7 @@ import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.UserRole;
 import org.example.expert.domain.user.repository.UserRepository;
+import org.example.expert.security.UserRoleEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,18 +34,17 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
-        UserRole userRole = UserRole.of(signupRequest.getUserRole());
+        UserRoleEnum userRoleEnum = UserRoleEnum.of(signupRequest.getUserRoleEnum());
 
         User newUser = new User(
                 signupRequest.getEmail(),
                 signupRequest.getUsername(),
                 encodedPassword,
-                userRole
+                userRoleEnum
         );
         User savedUser = userRepository.save(newUser);
 
-        String bearerToken = jwtUtil.createToken(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), userRole);
-
+        String bearerToken = jwtUtil.createToken(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), userRoleEnum);
         return new SignupResponse(bearerToken);
     }
 
@@ -57,7 +57,7 @@ public class AuthService {
             throw new AuthException("잘못된 비밀번호입니다.");
         }
 
-        String bearerToken = jwtUtil.createToken(user.getId(), user.getUsername(), user.getEmail(), user.getUserRole());
+        String bearerToken = jwtUtil.createToken(user.getId(), user.getUsername(), user.getEmail(), user.getUserRoleEnum());
 
         return new SigninResponse(bearerToken);
     }

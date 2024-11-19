@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.example.expert.domain.common.exception.ServerException;
 import org.example.expert.domain.user.enums.UserRole;
+import org.example.expert.security.UserRoleEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -34,7 +35,7 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Long userId, String username, String email, UserRole userRole) {
+    public String createToken(Long userId, String username, String email, UserRoleEnum userRoleEnum) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -42,18 +43,11 @@ public class JwtUtil {
                         .setSubject(String.valueOf(userId))
                         .claim("username", username)
                         .claim("email", email)
-                        .claim("userRole", userRole)
+                        .claim("userRoleEnum", userRoleEnum)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
-    }
-
-    public String substringToken(String tokenValue) {
-        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
-            return tokenValue.substring(7);
-        }
-        throw new ServerException("Not Found Token");
     }
 
     public Claims extractClaims(String token) {

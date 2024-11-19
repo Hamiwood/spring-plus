@@ -5,10 +5,10 @@ import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.dto.response.TodoResponse;
 import org.example.expert.domain.todo.service.TodoService;
 import org.example.expert.domain.user.dto.response.UserResponse;
-import org.example.expert.domain.user.entity.User;
-import org.example.expert.domain.user.enums.UserRole;
+import org.example.expert.security.UserRoleEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(TodoController.class)
 class TodoControllerTest {
 
@@ -35,9 +36,8 @@ class TodoControllerTest {
         // given
         long todoId = 1L;
         String title = "title";
-        AuthUser authUser = new AuthUser(1L, "email", UserRole.USER);
-        User user = User.fromAuthUser(authUser);
-        UserResponse userResponse = new UserResponse(user.getId(), user.getEmail());
+
+        UserResponse userResponse = new UserResponse(1L, "test@example.com");
         TodoResponse response = new TodoResponse(
                 todoId,
                 title,

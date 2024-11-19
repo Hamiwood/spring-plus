@@ -19,5 +19,5 @@ public class SignupRequest {
     @NotBlank
     private String password;
     @NotBlank
-    private String userRole;
+    private String userRoleEnum;
 }
