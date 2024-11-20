@@ -31,7 +31,7 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
     public Optional<Todo> findByIdWithUser(Long todoId){
         Todo result = queryFactory
                 .selectFrom(todo)
-                .leftJoin(todo).fetchJoin()
+                .leftJoin(todo.user, user).fetchJoin()
                 .where(todo.id.eq(todoId))
                 .fetchOne();
 
